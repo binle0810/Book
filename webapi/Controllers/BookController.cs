@@ -18,9 +18,9 @@ namespace webapi.Controllers
     public class BookController: ControllerBase
     {
         private readonly ApplicationDBcontext _context;
-        private readonly IBookRespository _bookRepo;
+        private readonly IBookRepository _bookRepo;
 
-        public BookController(ApplicationDBcontext context, IBookRespository book){
+        public BookController(ApplicationDBcontext context, IBookRepository book){
         _bookRepo=book;
         _context=context;
         
@@ -39,6 +39,7 @@ namespace webapi.Controllers
        
         public async Task<IActionResult> Getbyid([FromRoute] int id){
             var bookmodel=await _bookRepo.Getbyid(id);
+            if (bookmodel ==null)return NotFound($"Book with ID {id} not found.");
             return Ok(bookmodel.ToBookDto());
         }
         [HttpPost]

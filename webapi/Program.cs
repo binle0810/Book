@@ -50,7 +50,7 @@ builder.Services.AddDbContext<ApplicationDBcontext>(option =>
 {
     option.UseSqlServer(builder.Configuration.GetConnectionString("default"));
 });
-builder.Services.AddScoped<IBookRespository, BookRepository>();
+builder.Services.AddScoped<IBookRepository, BookRepository>();
 builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IFavorRepository, Favorrepository>();

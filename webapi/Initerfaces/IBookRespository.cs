@@ -8,7 +8,7 @@ using webapi.Models;
 
 namespace webapi.Initerfaces
 {
-    public interface IBookRespository
+    public interface IBookRepository
     {
         Task<List<Book>> GetAllAsync(QueryObjects queryObjects);
         Task<Book> CreateAsync(Book book);

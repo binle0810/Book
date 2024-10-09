@@ -13,7 +13,7 @@ using webapi.Models;
 
 namespace webapi.Repository
 {
-    public class BookRepository : IBookRespository
+    public class BookRepository : IBookRepository
     {
         private readonly ApplicationDBcontext _context;
     

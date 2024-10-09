@@ -16,10 +16,10 @@ namespace webapi.Controllers
     public class favorController: ControllerBase
     {
         private readonly UserManager<AppUser> _userManager;
-        private readonly IBookRespository _ibookrespo;
+        private readonly IBookRepository _ibookrespo;
         private readonly IFavorRepository _ifavorrepo;
 
-        public favorController(UserManager<AppUser> userManager, IBookRespository ibookrespo, IFavorRepository ifavorrepo)
+        public favorController(UserManager<AppUser> userManager, IBookRepository ibookrespo, IFavorRepository ifavorrepo)
         {
             _userManager = userManager;
             _ibookrespo = ibookrespo;

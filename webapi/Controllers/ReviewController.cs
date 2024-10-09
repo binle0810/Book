@@ -19,10 +19,10 @@ namespace webapi.Controllers
     public class ReviewController : ControllerBase
     {
         private readonly IReviewRepository _reviewRepo;
-        private readonly IBookRespository _bookrepo;
+        private readonly IBookRepository _bookrepo;
         private readonly UserManager<AppUser> _userManager;
 
-        public ReviewController(IReviewRepository reviewRepo, IBookRespository bookrepo, UserManager<AppUser> userManager)
+        public ReviewController(IReviewRepository reviewRepo, IBookRepository bookrepo, UserManager<AppUser> userManager)
         {
             _reviewRepo = reviewRepo;
             _bookrepo = bookrepo;
@@ -45,6 +45,8 @@ namespace webapi.Controllers
         public async Task<IActionResult> Getbyid([FromRoute] int id)
         {
             var reviewmodel = await _reviewRepo.Getbyid(id);
+            if (reviewmodel ==null)return NotFound($"Review with ID {id} not found.");
+
             return Ok(reviewmodel.ToReviewDto());
         }
 

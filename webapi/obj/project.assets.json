@@ -6167,11 +6167,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "d:\\c#\\api\\webapi\\webapi.csproj",
+      "projectUniqueName": "D:\\c#\\api\\APi_Book\\webapi\\webapi.csproj",
       "projectName": "webapi",
-      "projectPath": "d:\\c#\\api\\webapi\\webapi.csproj",
+      "projectPath": "D:\\c#\\api\\APi_Book\\webapi\\webapi.csproj",
       "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
-      "outputPath": "d:\\c#\\api\\webapi\\obj\\",
+      "outputPath": "D:\\c#\\api\\APi_Book\\webapi\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Admin\\AppData\\Roaming\\NuGet\\NuGet.Config",

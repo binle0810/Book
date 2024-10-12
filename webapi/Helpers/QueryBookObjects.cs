@@ -6,7 +6,7 @@ using Microsoft.Net.Http.Headers;
 
 namespace webapi.Helpers
 {
-    public class QueryObjects
+    public class QueryBookObjects
     {
         public string? Author{get;set;}=null;
         public string? Title{get;set;}=null;

@@ -42,7 +42,7 @@ namespace webapi.Repository
            return bookmodel;
         }
 
-        public async Task<List<Book>> GetAllAsync(QueryObjects queryObjects)
+        public async Task<List<Book>> GetAllAsync(QueryBookObjects queryObjects)
         {
             var books= _context.Books.Include(x=>x.Reviews).ThenInclude(a=>a.AppUser).AsQueryable();
             if(!string.IsNullOrWhiteSpace(queryObjects.Author)){

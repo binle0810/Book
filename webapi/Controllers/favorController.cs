@@ -31,7 +31,7 @@ namespace webapi.Controllers
         public async Task<IActionResult> GetuserFavor(){
             var username= User.GetUsername();
             var appUser= await _userManager.FindByNameAsync(username);
-            var userfavor=await _ifavorrepo.GetFavor(appUser);
+            var userfavor=await _ifavorrepo.GetFavor(appUser!);
             return Ok(userfavor);
         }
           [HttpPost]
@@ -46,14 +46,14 @@ namespace webapi.Controllers
 
             if (book == null) return BadRequest("Book not found");
 
-            var userPortfolio = await _ifavorrepo.GetFavor(appUser);
+            var userPortfolio = await _ifavorrepo.GetFavor(appUser!);
 
             if (userPortfolio.Any(e => e.Title.ToLower() == Title.ToLower())) return BadRequest("Cannot add same book to favor");
 
             var favor = new Favor
             {
                 BookId = book.Id,
-                AppUserId = appUser.Id
+                AppUserId = appUser!.Id
             };
 
             await _ifavorrepo.CreateFavorasync(favor);
@@ -74,13 +74,13 @@ namespace webapi.Controllers
             var username = User.GetUsername();
             var appUser = await _userManager.FindByNameAsync(username);
 
-            var userfavor = await _ifavorrepo.GetFavor(appUser);
+            var userfavor = await _ifavorrepo.GetFavor(appUser!);
 
             var filteredBook = userfavor.Where(s => s.Title.ToLower() == Title.ToLower()).ToList();
 
             if (filteredBook.Count > 0)
             {
-                await _ifavorrepo.DeleteFavor(appUser, Title);
+                await _ifavorrepo.DeleteFavor(appUser!, Title);
             }
             else
             {

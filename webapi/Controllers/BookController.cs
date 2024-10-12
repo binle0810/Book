@@ -15,61 +15,69 @@ namespace webapi.Controllers
 {
     [Route("api/book")]
     [ApiController]
-    public class BookController: ControllerBase
+    public class BookController : ControllerBase
     {
         private readonly ApplicationDBcontext _context;
         private readonly IBookRepository _bookRepo;
 
-        public BookController(ApplicationDBcontext context, IBookRepository book){
-        _bookRepo=book;
-        _context=context;
-        
+        public BookController(ApplicationDBcontext context, IBookRepository book)
+        {
+            _bookRepo = book;
+            _context = context;
+
         }
-        [Authorize(Roles ="User,Admin")]
+        [Authorize(Roles = "User,Admin")]
 
         [HttpGet]
-       
-        public  async Task<IActionResult> Getall([FromQuery] QueryObjects queryObjects){
-            var book= await _bookRepo.GetAllAsync(queryObjects);
-            var bookDto=book.Select(s=>s.ToBookDto());
+
+        public async Task<IActionResult> Getall([FromQuery] QueryBookObjects queryObjects)
+        {
+            var book = await _bookRepo.GetAllAsync(queryObjects);
+            var bookDto = book.Select(s => s.ToBookDto());
             return Ok(bookDto);
         }
         [HttpGet("{id:int}")]
-        [Authorize(Roles ="User,Admin")]
-       
-        public async Task<IActionResult> Getbyid([FromRoute] int id){
-            var bookmodel=await _bookRepo.Getbyid(id);
-            if (bookmodel ==null)return NotFound($"Book with ID {id} not found.");
-            return Ok(bookmodel.ToBookDto());
+        [Authorize(Roles = "User,Admin")]
+
+        public async Task<IActionResult> Getbyid([FromRoute] int id)
+        {
+            var bookmodel = await _bookRepo.Getbyid(id);
+            if (!await _bookRepo.BookExist(id)) return NotFound($"Book with ID {id} not found.");
+            return Ok(bookmodel!.ToBookDto());
         }
         [HttpPost]
-        [Authorize(Roles ="User,Admin")]
+        [Authorize(Roles = "User,Admin")]
 
-        public async Task<IActionResult> Create([FromBody] CreateBookDto createBookDto){
-                    if (!ModelState.IsValid)return BadRequest(ModelState);
+        public async Task<IActionResult> Create([FromBody] CreateBookDto createBookDto)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            var bookmodel= createBookDto.ToCreateBook();
+            var bookmodel = createBookDto.ToCreateBook();
             await _bookRepo.CreateAsync(bookmodel);
-        return Ok(bookmodel.ToBookDto());
-        //    return CreatedAtAction(nameof(Getbyid), new {id=bookmodel.Id},bookmodel.TobookDto());
+            return Ok(bookmodel.ToBookDto());
+            //    return CreatedAtAction(nameof(Getbyid), new {id=bookmodel.Id},bookmodel.TobookDto());
         }
         [HttpPut]
         [Route("{id:int}")]
-         [Authorize(Roles ="Admin")]
+        [Authorize(Roles = "Admin")]
 
-        public async Task<IActionResult> Update([FromRoute] int id ,[FromBody] UpdateBookDto updateDto){
-                    if (!ModelState.IsValid)return BadRequest(ModelState);
+        public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateBookDto updateDto)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+            if (!await _bookRepo.BookExist(id)) return NotFound($"Book with ID {id} not found.");
+            var bookmodel = await _bookRepo.UpdateAsync(id, updateDto);
 
-            var bookmodel=await _bookRepo.UpdateAsync( id,updateDto);
-            return Ok(bookmodel.ToBookDto());
+            return Ok(bookmodel!.ToBookDto());
         }
-         [HttpDelete]
+        [HttpDelete]
         [Route("{id:int}")]
-         [Authorize(Roles ="Admin")]
+        [Authorize(Roles = "Admin")]
 
-        public async Task< IActionResult>  Delete([FromRoute] int id ){
-            await _bookRepo.Delete(id);
-            return NoContent();
+        public async Task<IActionResult> Delete([FromRoute] int id)
+        {
+            if (!await _bookRepo.BookExist(id)) return NotFound($"Book with ID {id} not found.");
+
+            return Ok($"Book with ID {id} has been successfully deleted.");
         }
     }
 }

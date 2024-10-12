@@ -10,7 +10,7 @@ namespace webapi.Initerfaces
 {
     public interface IBookRepository
     {
-        Task<List<Book>> GetAllAsync(QueryObjects queryObjects);
+        Task<List<Book>> GetAllAsync(QueryBookObjects queryObjects);
         Task<Book> CreateAsync(Book book);
         Task<Book?> Getbyid(int id);
         Task<Book?> UpdateAsync(int id,UpdateBookDto updateDto);

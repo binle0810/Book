@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using webapi.Dtos.Review;
 using webapi.Extension;
+using webapi.Helpers;
 using webapi.Initerfaces;
 using webapi.Mappers;
 using webapi.Models;
@@ -32,9 +33,9 @@ namespace webapi.Controllers
         [HttpGet]
         [Authorize(Roles = "User,Admin")]
 
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll([FromQuery] QueryReviewObjects queryReview)
         {
-            var reviewmodel = await _reviewRepo.GetAllAsync();
+            var reviewmodel = await _reviewRepo.GetAllAsync(queryReview);
             var reviewdto = reviewmodel.Select(x => x.ToReviewDto());
             return Ok(reviewdto);
         }
@@ -45,9 +46,12 @@ namespace webapi.Controllers
         public async Task<IActionResult> Getbyid([FromRoute] int id)
         {
             var reviewmodel = await _reviewRepo.Getbyid(id);
-            if (reviewmodel ==null)return NotFound($"Review with ID {id} not found.");
+         if (!await _reviewRepo.ReviewExist(id))
+            {
+                return BadRequest($"Review does not exist in database  ");
+            }
 
-            return Ok(reviewmodel.ToReviewDto());
+            return Ok(reviewmodel!.ToReviewDto());
         }
 
         [HttpPost("{bookid:int}")]
@@ -65,7 +69,7 @@ namespace webapi.Controllers
             var appUser= await _userManager.FindByNameAsync(user);
 
             var reviewmodel = createReviewDto.ToCreateReviewDto(bookid);
-            reviewmodel.AppUserId= appUser.Id;
+            reviewmodel.AppUserId= appUser!.Id;
             await _reviewRepo.CreateAsync(reviewmodel);
             return Ok(reviewmodel.ToReviewDto());
             //    return CreatedAtAction(nameof(Getbyid), new {id=bookmodel.Id},bookmodel.TobookDto());
@@ -82,7 +86,7 @@ namespace webapi.Controllers
                 return BadRequest($"Review does not exist in database  ");
             }
             var reviewmodel = await _reviewRepo.UpdateAsync(id, updateCmDto);
-            return Ok(reviewmodel.ToReviewDto());
+            return Ok(reviewmodel!.ToReviewDto());
         }
         [HttpDelete]
         [Route("{id:int}")]
@@ -90,8 +94,13 @@ namespace webapi.Controllers
 
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
+            if (!await _reviewRepo.ReviewExist(id))
+            {
+                return BadRequest($"Review does not exist in database  ");
+            }
             await _reviewRepo.DeleteAsync(id);
-            return NoContent();
+            
+             return Ok($"Review with ID {id} has been successfully deleted.");
         }
     }
 }

@@ -40,22 +40,22 @@ namespace webapi.Controllers
                     Email = registerDto.Email
                 };
 
-                var createdUser = await _userManager.CreateAsync(appUser, registerDto.Password);
+                var createdUser = await _userManager.CreateAsync(appUser, registerDto.Password!);
 
                 if (createdUser.Succeeded)
                 {
                     var roleResult = await _userManager.AddToRoleAsync(appUser, "User");
                     if (roleResult.Succeeded)
                     {
-                         return Ok(
-                             new NewUserDto
-                             {
-                                 Username = appUser.UserName,
-                                 Email = appUser.Email,
-                                 Token = await _itokenservice.CreateToken(appUser)
+                        return Ok(
+                            new NewUserDto
+                            {
+                                Username = appUser.UserName!,
+                                Email = appUser.Email!,
+                                Token = await _itokenservice.CreateToken(appUser)
 
-                             });
-                       
+                            });
+
                     }
                     else
                     {
@@ -81,23 +81,23 @@ namespace webapi.Controllers
             }
             var user = await _userManager.Users.FirstOrDefaultAsync(x => x.UserName == logDto.Username);
             if (user == null) return Unauthorized("The account does not exist");
-            var result = await _siginManager.CheckPasswordSignInAsync(user, logDto.Password, false);
+            var result = await _siginManager.CheckPasswordSignInAsync(user, logDto.Password!, false);
             if (!result.Succeeded) return Unauthorized("Wrong password");
             return Ok(new NewUserDto
             {
-                Username = user.UserName,
-                Email = user.Email,
-                Token =  await _itokenservice.CreateToken(user)
+                Username = user.UserName!,
+                Email = user.Email!,
+                Token = await _itokenservice.CreateToken(user)
             });
-            
-                /* var roles = await _userManager.GetRolesAsync(user);
 
-                        // Chuyển đổi danh sách roles thành danh sách tên role
-                        var roleNames = roles.ToList();
+            /* var roles = await _userManager.GetRolesAsync(user);
 
-                        return Ok(roleNames);*/
-            
-            
+                    // Chuyển đổi danh sách roles thành danh sách tên role
+                    var roleNames = roles.ToList();
+
+                    return Ok(roleNames);*/
+
+
 
         }
     }

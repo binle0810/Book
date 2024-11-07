@@ -26,7 +26,7 @@ namespace webapi.Controllers
             _context = context;
 
         }
-        [Authorize(Roles = "User,Admin")]
+        
 
         [HttpGet]
 
@@ -37,7 +37,7 @@ namespace webapi.Controllers
             return Ok(bookDto);
         }
         [HttpGet("{id:int}")]
-        [Authorize(Roles = "User,Admin")]
+        //[Authorize(Roles = "User,Admin")]
 
         public async Task<IActionResult> Getbyid([FromRoute] int id)
         {

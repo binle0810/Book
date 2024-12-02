@@ -57,6 +57,10 @@ namespace webapi.Repository
                 {
                     books = queryObjects.IsAscending ? books.OrderBy(s => s.Author) : books.OrderByDescending(s => s.Author);
                 }
+                if (queryObjects.SortBy.Equals("Title", StringComparison.OrdinalIgnoreCase))
+                {
+                    books = queryObjects.IsAscending ? books.OrderBy(s => s.Title) : books.OrderByDescending(s => s.Title);
+                }
             }
             var skipnumber=(queryObjects.PageNumber-1)*queryObjects.PageSize;
             return await books.Skip(skipnumber).Take(queryObjects.PageSize).ToListAsync();

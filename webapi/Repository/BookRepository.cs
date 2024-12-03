@@ -44,7 +44,7 @@ namespace webapi.Repository
 
         public async Task<List<Book>> GetAllAsync(QueryBookObjects queryObjects)
         {
-            var books= _context.Books.Include(x=>x.Reviews).ThenInclude(a=>a.AppUser).AsQueryable();
+            var books=  _context.Books.Include(x=>x.Reviews).ThenInclude(a=>a.AppUser).AsQueryable();
             if(!string.IsNullOrWhiteSpace(queryObjects.Author)){
                 books=books.Where(x=>x.Author.ToLower().Contains(queryObjects.Author.ToLower()));
             }
@@ -62,8 +62,9 @@ namespace webapi.Repository
                     books = queryObjects.IsAscending ? books.OrderBy(s => s.Title) : books.OrderByDescending(s => s.Title);
                 }
             }
-            var skipnumber=(queryObjects.PageNumber-1)*queryObjects.PageSize;
-            return await books.Skip(skipnumber).Take(queryObjects.PageSize).ToListAsync();
+            return  await PaginatedList<Book>.CreateAsync(books,queryObjects.PageNumber,queryObjects.PageSize);
+            //var skipnumber=(queryObjects.PageNumber-1)*queryObjects.PageSize;
+       //     return await books.Skip(skipnumber).Take(queryObjects.PageSize).ToListAsync();
         }
 
         public async Task<Book?> Getbyid(int id)
